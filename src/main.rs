@@ -11,19 +11,65 @@ fn main() {
     day2_part2();
 
     day3_part1();
+    day3_part2();
 }
 
 /*https://adventofcode.com/2022/day/3 */
 
+fn day3_part2() {
+    if let Ok(lines) = read_lines("src/day3.txt") {
+        let v: Vec<String> = lines.map(|l| l.unwrap()).collect();
+        let sum: i32 = v.chunks(3).map(|c| c.to_vec()).map(|c| priorities2(c)).sum();
+        println!("Result Day3 Part2 {}", sum);
+        assert_eq!(sum, 2881);
+    }
+}
+
+
 fn day3_part1() {
     if let Ok(lines) = read_lines("src/day3.txt") {
-        let sum: i32 = lines.map(|line| xxx(line.unwrap())).sum();
+        let sum: i32 = lines.map(|line| priorities(line.unwrap())).sum();
         println!("Result Day3 Part1 {}", sum);
         assert_eq!(sum, 7980);
     }
 }
 
-fn xxx(line: String) -> i32 {
+fn priorities2(lines: Vec<String>) -> i32 {
+    let mut characters: HashMap<char, i32> = HashMap::new();
+    let chars = 'a'..='z';
+    for (i, c) in chars.enumerate() {
+        characters.insert(c, i as i32 + 1);
+    }
+    let chars = 'A'..='Z';
+    for (i, c) in chars.enumerate() {
+        characters.insert(c, 26 + i as i32 + 1);
+    }
+
+    let mut map1 = HashMap::new();
+    for s in lines.get(0).unwrap().chars() {
+        map1.entry(s).and_modify(|v| *v += 1).or_insert(1);
+    }
+
+    let mut map2 = HashMap::new();
+    for s in lines.get(1).unwrap().chars() {
+        map2.entry(s).and_modify(|v| *v += 1).or_insert(1);
+    }
+
+    for s in lines.get(2).unwrap().chars() {
+        if map1.contains_key(&s) && map2.contains_key(&s) {
+            match characters.get(&s) {
+                Some(&number) => {
+                    return number;
+                }
+                _ => 0,
+            };
+        }
+    }
+    0
+}
+
+
+fn priorities(line: String) -> i32 {
     let mut characters: HashMap<char, i32> = HashMap::new();
     let chars = 'a'..='z';
     for (i, c) in chars.enumerate() {
@@ -43,7 +89,7 @@ fn xxx(line: String) -> i32 {
         if map1.contains_key(&s) {
             match characters.get(&s) {
                 Some(&number) => {
-                    return number
+                    return number;
                 }
                 _ => 0,
             };
@@ -111,7 +157,6 @@ fn day1_part2() {
     let res = r[r.len() - 1] + r[r.len() - 2] + r[r.len() - 3];
     println!("Result Day1 Part2 {}", res);
     assert_eq!(res, 207968);
-
 }
 
 fn read_to_vec() -> Vec<i32> {

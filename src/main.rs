@@ -3,17 +3,22 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 
+const INPUT_DAY1 : &str = "src/day1.txt";
+const INPUT_DAY2 : &str = "src/day2.txt";
+const INPUT_DAY3 : &str = "src/day3.txt";
+const INPUT_DAY4 : &str = "src/day4.txt";
 
 struct Day4 {
 
 }
+
 
 impl Day4 {
 
     /*https://adventofcode.com/2022/day/4 */
 
     fn part1() {
-        if let Ok(lines) = read_lines("src/day4.txt") {
+        if let Ok(lines) = read_lines(INPUT_DAY4) {
             // split line into 2 groups with comma as separator.
             let sum : i32 = lines.map(|l| Self::compare_ranges_and_check_if_overlaps(  l.unwrap().split(',').collect()) ).sum();
             println!("Result Day4 Part1 {}", sum);
@@ -22,7 +27,7 @@ impl Day4 {
     }
 
     fn part2() {
-        if let Ok(lines) = read_lines("src/day4.txt") {
+        if let Ok(lines) = read_lines(INPUT_DAY4) {
             let sum : i32 = lines.map(|l| Self::compare_ranges_and_sum_pairs_that_are_overlapping( l.unwrap().split(',').collect() ) ).sum();
             println!("Result Day4 Part2 {}", sum);
             assert_eq!(sum, 926);
@@ -97,7 +102,7 @@ fn main() {
 /*https://adventofcode.com/2022/day/3 */
 
 fn day3_part2() {
-    if let Ok(lines) = read_lines("src/day3.txt") {
+    if let Ok(lines) = read_lines(INPUT_DAY3) {
         let v: Vec<String> = lines.map(|l| l.unwrap()).collect();
         let sum: i32 = v.chunks(3).map(|c| c.to_vec()).map(|c| priorities2(c)).sum();
         println!("Result Day3 Part2 {}", sum);
@@ -107,7 +112,7 @@ fn day3_part2() {
 
 
 fn day3_part1() {
-    if let Ok(lines) = read_lines("src/day3.txt") {
+    if let Ok(lines) = read_lines(INPUT_DAY3) {
         let sum: i32 = lines.map(|line| priorities(line.unwrap())).sum();
         println!("Result Day3 Part1 {}", sum);
         assert_eq!(sum, 7980);
@@ -179,7 +184,7 @@ fn priorities(line: String) -> i32 {
 }
 
 fn day2_part1() {
-    if let Ok(lines) = read_lines("src/day2.txt") {
+    if let Ok(lines) = read_lines(INPUT_DAY2) {
         let score: i32 = lines.map(|l| score_part1(l.unwrap())).sum();
         println!("Result Day2 Part1 {}", score);
         assert_eq!(score, 12740);
@@ -187,7 +192,7 @@ fn day2_part1() {
 }
 
 fn day2_part2() {
-    if let Ok(lines) = read_lines("src/day2.txt") {
+    if let Ok(lines) = read_lines(INPUT_DAY2) {
         let score: i32 = lines.map(|l| score_part2(l.unwrap())).sum();
         println!("Result Day2 Part2 {}", score);
         assert_eq!(score, 11980);
@@ -242,7 +247,7 @@ fn day1_part2() {
 fn read_to_vec() -> Vec<i32> {
     let mut result = Vec::new();
     let mut elf = 0;
-    if let Ok(lines) = read_lines("src/day1.txt") {
+    if let Ok(lines) = read_lines(INPUT_DAY1) {
         for line in lines {
             if let Ok(calories) = line {
                 if calories.chars().count() == 0 {

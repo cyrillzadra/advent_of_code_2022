@@ -3,6 +3,82 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 
+
+struct Day4 {
+
+}
+
+impl Day4 {
+
+    /*https://adventofcode.com/2022/day/4 */
+
+    fn part1() {
+        if let Ok(lines) = read_lines("src/day4.txt") {
+            // split line into 2 groups with comma as separator.
+            let sum : i32 = lines.map(|l| Self::compare_ranges_and_check_if_overlaps(  l.unwrap().split(',').collect()) ).sum();
+            println!("Result Day4 Part1 {}", sum);
+            assert_eq!(sum, 644);
+        }
+    }
+
+    fn part2() {
+        if let Ok(lines) = read_lines("src/day4.txt") {
+            let sum : i32 = lines.map(|l| Self::compare_ranges_and_sum_pairs_that_are_overlapping( l.unwrap().split(',').collect() ) ).sum();
+            println!("Result Day4 Part2 {}", sum);
+            assert_eq!(sum, 926);
+        }
+    }
+
+    fn compare_ranges_and_sum_pairs_that_are_overlapping(v: Vec<&str>) -> i32 {
+        let (start1, end1) = Self::split_range(v.get(0).unwrap());
+        let (start2, end2) = Self::split_range(v.get(1).unwrap());
+        let overlaps = Self::check_if_pair_overlaps(start1, end1, start2, end2);
+        
+        Self::bool2int(overlaps)
+    } 
+
+    fn split_range(range: &str) -> (i32, i32) {
+        let v: Vec<&str> = range.split('-').collect();
+        let start = v.get(0).unwrap().parse::<i32>().unwrap();
+        let end = v.get(1).unwrap().parse::<i32>().unwrap();
+        (start, end)
+    }
+
+    fn compare_ranges_and_check_if_overlaps(v: Vec<&str>) -> i32 {
+        let (start1, end1) = Self::split_range(v.get(0).unwrap());
+        let (start2, end2) = Self::split_range(v.get(1).unwrap());
+        let overlaps = Self::check_if_pair_fully_contain_other(start1, end1, start2, end2);
+       
+        Self::bool2int(overlaps)
+    }
+
+    fn bool2int(b: bool) -> i32 {
+        if b {
+            return 1;
+        }
+        0
+    }
+
+    fn check_if_pair_overlaps(start1: i32, end1: i32, start2: i32, end2: i32) -> bool {
+        start1 <= start2 && start2 <= end1
+            || start1 <= end2 && end2 <= end1
+            || start2 <= start1 && start1 <= end2
+            || start2 <= end1 && end1 <= end2
+    }
+
+    fn check_if_pair_fully_contain_other(start1: i32, end1: i32, start2: i32, end2: i32) -> bool {
+        if start1 <= start2 && end1 >= end2 {
+            return true;
+        }
+        if start2 <= start1 && end2 >= end1 {
+            return true;
+        }
+        false
+    }
+
+
+}
+
 fn main() {
     day1_part1();
     day1_part2();
@@ -12,7 +88,11 @@ fn main() {
 
     day3_part1();
     day3_part2();
+
+    Day4::part1();
+    Day4::part2();
 }
+
 
 /*https://adventofcode.com/2022/day/3 */
 
@@ -23,7 +103,7 @@ fn day3_part2() {
         println!("Result Day3 Part2 {}", sum);
         assert_eq!(sum, 2881);
     }
-}
+} 
 
 
 fn day3_part1() {

@@ -3,24 +3,22 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 
-const INPUT_DAY1 : &str = "src/day1.txt";
-const INPUT_DAY2 : &str = "src/day2.txt";
-const INPUT_DAY3 : &str = "src/day3.txt";
-const INPUT_DAY4 : &str = "src/day4.txt";
+const INPUT_DAY1: &str = "src/day1.txt";
+const INPUT_DAY2: &str = "src/day2.txt";
+const INPUT_DAY3: &str = "src/day3.txt";
+const INPUT_DAY4: &str = "src/day4.txt";
 
-struct Day4 {
 
-}
+struct Day4 {}
 
 
 impl Day4 {
-
     /*https://adventofcode.com/2022/day/4 */
 
     fn part1() {
         if let Ok(lines) = read_lines(INPUT_DAY4) {
             // split line into 2 groups with comma as separator.
-            let sum : i32 = lines.map(|l| Self::compare_ranges_and_check_if_overlaps(  l.unwrap().split(',').collect()) ).sum();
+            let sum: i32 = lines.map(|l| Self::compare_ranges_and_check_if_overlaps(l.unwrap().split(',').collect())).sum();
             println!("Result Day4 Part1 {}", sum);
             assert_eq!(sum, 644);
         }
@@ -28,7 +26,7 @@ impl Day4 {
 
     fn part2() {
         if let Ok(lines) = read_lines(INPUT_DAY4) {
-            let sum : i32 = lines.map(|l| Self::compare_ranges_and_sum_pairs_that_are_overlapping( l.unwrap().split(',').collect() ) ).sum();
+            let sum: i32 = lines.map(|l| Self::compare_ranges_and_sum_pairs_that_are_overlapping(l.unwrap().split(',').collect())).sum();
             println!("Result Day4 Part2 {}", sum);
             assert_eq!(sum, 926);
         }
@@ -38,9 +36,9 @@ impl Day4 {
         let (start1, end1) = Self::split_range(v.get(0).unwrap());
         let (start2, end2) = Self::split_range(v.get(1).unwrap());
         let overlaps = Self::check_if_pair_overlaps(start1, end1, start2, end2);
-        
+
         Self::bool2int(overlaps)
-    } 
+    }
 
     fn split_range(range: &str) -> (i32, i32) {
         let v: Vec<&str> = range.split('-').collect();
@@ -53,7 +51,7 @@ impl Day4 {
         let (start1, end1) = Self::split_range(v.get(0).unwrap());
         let (start2, end2) = Self::split_range(v.get(1).unwrap());
         let overlaps = Self::check_if_pair_fully_contain_other(start1, end1, start2, end2);
-       
+
         Self::bool2int(overlaps)
     }
 
@@ -80,8 +78,6 @@ impl Day4 {
         }
         false
     }
-
-
 }
 
 fn main() {
@@ -102,24 +98,6 @@ fn main() {
 /*https://adventofcode.com/2022/day/3 */
 
 fn day3_part2() {
-    if let Ok(lines) = read_lines(INPUT_DAY3) {
-        let v: Vec<String> = lines.map(|l| l.unwrap()).collect();
-        let sum: i32 = v.chunks(3).map(|c| c.to_vec()).map(|c| priorities2(c)).sum();
-        println!("Result Day3 Part2 {}", sum);
-        assert_eq!(sum, 2881);
-    }
-} 
-
-
-fn day3_part1() {
-    if let Ok(lines) = read_lines(INPUT_DAY3) {
-        let sum: i32 = lines.map(|line| priorities(line.unwrap())).sum();
-        println!("Result Day3 Part1 {}", sum);
-        assert_eq!(sum, 7980);
-    }
-}
-
-fn priorities2(lines: Vec<String>) -> i32 {
     let mut characters: HashMap<char, i32> = HashMap::new();
     let chars = 'a'..='z';
     for (i, c) in chars.enumerate() {
@@ -130,6 +108,34 @@ fn priorities2(lines: Vec<String>) -> i32 {
         characters.insert(c, 26 + i as i32 + 1);
     }
 
+    if let Ok(lines) = read_lines(INPUT_DAY3) {
+        let v: Vec<String> = lines.map(|l| l.unwrap()).collect();
+        let sum: i32 = v.chunks(3).map(|c| c.to_vec()).map(|c| priorities2(c, &mut characters)).sum();
+        println!("Result Day3 Part2 {}", sum);
+        assert_eq!(sum, 2881);
+    }
+}
+
+
+fn day3_part1() {
+    let mut characters: HashMap<char, i32> = HashMap::new();
+    let chars = 'a'..='z';
+    for (i, c) in chars.enumerate() {
+        characters.insert(c, i as i32 + 1);
+    }
+    let chars = 'A'..='Z';
+    for (i, c) in chars.enumerate() {
+        characters.insert(c, 26 + i as i32 + 1);
+    }
+
+    if let Ok(lines) = read_lines(INPUT_DAY3) {
+        let sum: i32 = lines.map(|line| priorities(line.unwrap(), &mut characters)).sum();
+        println!("Result Day3 Part1 {}", sum);
+        assert_eq!(sum, 7980);
+    }
+}
+
+fn priorities2(lines: Vec<String>, characters: &mut HashMap<char, i32>) -> i32 {
     let mut map1 = HashMap::new();
     for s in lines.get(0).unwrap().chars() {
         map1.entry(s).and_modify(|v| *v += 1).or_insert(1);
@@ -154,17 +160,7 @@ fn priorities2(lines: Vec<String>) -> i32 {
 }
 
 
-fn priorities(line: String) -> i32 {
-    let mut characters: HashMap<char, i32> = HashMap::new();
-    let chars = 'a'..='z';
-    for (i, c) in chars.enumerate() {
-        characters.insert(c, i as i32 + 1);
-    }
-    let chars = 'A'..='Z';
-    for (i, c) in chars.enumerate() {
-        characters.insert(c, 26 + i as i32 + 1);
-    }
-
+fn priorities(line: String, characters: &mut HashMap<char, i32>) -> i32 {
     let (part1, part2) = line.split_at(line.len() / 2);
     let mut map1 = HashMap::new();
     for s in part1.chars() {
